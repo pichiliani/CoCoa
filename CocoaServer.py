@@ -4,6 +4,11 @@ import sys
 import signal
 import time
 import subprocess
+import requests
+
+#NOTA: NaO ESQUECER DE CONFIGURAR ESTE IP_NODEMCU
+#NO CODIGO FONTE DO NODEMCU (ARDUINO ESP 8266)
+IP_NODEMCU = "192.168.15.32"
 
 THREADS = []
 
@@ -34,13 +39,29 @@ class Th(Thread):
 					self.callback(self.num)	
 				
 				anterior = atual
-				time.sleep(0.1)
+				time.sleep(0.05)
 
 
 def MyCallback(x):
+	
+	# Tocando o audio
 	print("Botao : " + str(x) + " pressionado!");
-	p = subprocess.Popen(['aplay','-D','hw:1,0',str(x) + '.wav'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+	p = subprocess.Popen(['aplay','-D','hw:1,0','assets/audio/' + str(x) + '.wav'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
+	# Mandando o comando que liga o led
+	if(x==1):
+		requests.get("http://" + IP_NODEMCU + "/C")
+	if(x==2):
+		requests.get("http://" + IP_NODEMCU + "/F")
+	if(x==3):
+		requests.get("http://" + IP_NODEMCU + "/I")
+	if(x==4):
+		requests.get("http://" + IP_NODEMCU + "/L")
+	if(x==5):
+		requests.get("http://" + IP_NODEMCU + "/O")
+	if(x==6):
+		requests.get("http://" + IP_NODEMCU + "/R")	
+		
 def signal_handler(signal, frame):
 	
 	for t in THREADS:
