@@ -1,0 +1,40 @@
+Lista de ID das tags utilizadas
+-------------------------------
+
+ID:69 7E 6F 3B
+Símbolo: Estou com fome
+Arquivo: 1.wav
+
+ID:DD 9D DA AB
+Símbolo: Estou com sede
+Arquivo: 2.wav
+
+
+ID:F0 A5 DB AB
+Símbolo: Estou com dor
+Arquivo: 3.wav
+
+
+ID:72 2B 72 5B
+Símbolo: Estou com sono
+Arquivo: 4.wav
+
+
+ID:6A 73 10 85
+Símbolo: Quero ir ao banheiro
+Arquivo: 5.wav 
+
+
+ID:60 34 70 3B
+Símbolo: Preciso de ajuda
+Arquivo: 6.wav
+
+Lista de ID das tags "sobrando"
+-------------------------------
+
+ID: 50 66 4F 39
+ID: 1A 76 D5 AB
+ID: E6 82 1B 7E
+ID: C7 82 44 39
+
+CARTAO: C2 22 0F BB
