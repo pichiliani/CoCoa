@@ -1,40 +1,49 @@
 Lista de ID das tags utilizadas
+NOTA: O ID tem letras em minúsculo
+converto para uppercase no python
 -------------------------------
 
-ID:69 7E 6F 3B
+ID:697E6F3B
 Símbolo: Estou com fome
 Arquivo: 1.wav
 
-ID:DD 9D DA AB
+ID:DD9DDAAB
 Símbolo: Estou com sede
 Arquivo: 2.wav
 
 
-ID:F0 A5 DB AB
+ID:F0A5DBAB
 Símbolo: Estou com dor
 Arquivo: 3.wav
 
 
-ID:72 2B 72 5B
+ID:722B725B
 Símbolo: Estou com sono
 Arquivo: 4.wav
 
 
-ID:6A 73 10 85
+ID:6A731085
 Símbolo: Quero ir ao banheiro
 Arquivo: 5.wav 
 
 
-ID:60 34 70 3B
+ID:6034703B
 Símbolo: Preciso de ajuda
 Arquivo: 6.wav
 
 Lista de ID das tags "sobrando"
 -------------------------------
+ID:C7824439
+Símbolo: Quero ler uma história
+Arquivo: 7.wav
 
-ID: 50 66 4F 39
-ID: 1A 76 D5 AB
-ID: E6 82 1B 7E
-ID: C7 82 44 39
 
-CARTAO: C2 22 0F BB
+ID:1A76D5AB
+Símbolo: O barulho me incomoda
+Arquivo: 8.wav
+
+
+ID:E6821B7E
+ID:50664F39
+
+CARTAO:C2220FBB
