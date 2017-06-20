@@ -1,8 +1,13 @@
+#include <SPI.h>
+#include <MFRC522.h>
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
+
+// INFORMAÇÕES DA REDE
 // const char* ssid = "batcaverna";
 // const char* password = "joker2537";
 
@@ -12,12 +17,24 @@ const char* password = "NOVAREDE";
 
 ESP8266WebServer server(80);
 
+// PORTAS DO LEITOR RFID
+
+//Pins para o NodeMCU (ver Arquivo DiagramaNodeMCU.docx)
+#define SS_PIN 4   // Porta SDA 
+#define RST_PIN 5  // Porta RST
+
+MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
+  
+char st[20];
+
+// LEDS. Somente 4 leds aqui por limitação de porta
+
 const int led1 = 16; // Porta   D0
-const int led2 = 05; // Porta   D1
-const int led3 = 04; // Porta   D2
-const int led4 = 0;  // Porta   D3
-const int led5 = 02; // Porta   D4
-const int led6 = 14; // Porta   D5
+const int led2 = 0;  // Porta   D3
+const int led3 = 02; // Porta   D4
+const int led4 = 15;  // Porta   D8
+// const int led5 = 9; // Porta   SD2
+// const int led6 = 10; // Porta   SD3
 
 
 void AcendeLed(int l)
@@ -111,7 +128,7 @@ void handleLed4Pisca() {
   }
 
 // led5
-
+/*
 void handleLed5Acende() {
   AcendeLed(led5);
   }
@@ -123,9 +140,9 @@ void handleLed5Apaga() {
 void handleLed5Pisca() {
   PiscaLed(led5);
   }
-
+*/
 // led6
-
+/*
 void handleLed6Acende() {
   AcendeLed(led6);
   }
@@ -137,7 +154,7 @@ void handleLed6Apaga() {
 void handleLed6Pisca() {
   PiscaLed(led6);
   }
-
+*/
 
 void handleRoot() {
   server.send(200, "text/plain", "hello from esp8266!");
@@ -162,22 +179,27 @@ void handleNotFound(){
 }
 
 void setup(void){
+  
+  // LEITOR RFID
+  Serial.begin(9600);   // Inicia a serial
+  SPI.begin();      // Inicia  SPI bus
+  mfrc522.PCD_Init();   // Inicia MFRC522
+  
+ 
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
   pinMode(led3, OUTPUT);
   pinMode(led4, OUTPUT);
-  pinMode(led5, OUTPUT);
-  pinMode(led6, OUTPUT);
+  // pinMode(led5, OUTPUT);
+  // pinMode(led6, OUTPUT);
   
   digitalWrite(led1, 0);
   digitalWrite(led2, 0);
   digitalWrite(led3, 0);
   digitalWrite(led4, 0);
-  digitalWrite(led5, 0);
-  digitalWrite(led6, 0);
+  // digitalWrite(led5, 0);
+  // digitalWrite(led6, 0);
   
-  
-  Serial.begin(115200);
   WiFi.begin(ssid, password);
   Serial.println("");
 
@@ -220,15 +242,18 @@ void setup(void){
   server.on("/L", handleLed4Pisca);
 
   // Led5
+  /*
   server.on("/M", handleLed5Acende);
   server.on("/N", handleLed5Apaga);
   server.on("/O", handleLed5Pisca);
-
+  */
+  
   // Led6
+  /*
   server.on("/P", handleLed6Acende);
   server.on("/Q", handleLed6Apaga);
   server.on("/R", handleLed6Pisca);
-
+  */
 
   server.on("/inline", [](){
     server.send(200, "text/plain", "this works as well");
@@ -241,5 +266,41 @@ void setup(void){
 }
 
 void loop(void){
+  // Cuidas das requisições WEB
   server.handleClient();
+
+  // Cuida do RDID
+
+  handleRFID();
 }
+
+void handleRFID()
+{
+  // Look for new cards
+  if ( ! mfrc522.PICC_IsNewCardPresent()) 
+  {
+        // Serial.println("Sem cartão : ");
+        return;
+  }
+  // Select one of the cards
+  if ( ! mfrc522.PICC_ReadCardSerial()) 
+  {
+        Serial.println("Err?");
+        return;
+  }
+  //Mostra UID na serial
+  // Serial.print("UID da tag :");
+  String conteudo= "";
+  byte letra;
+  for (byte i = 0; i < mfrc522.uid.size; i++) 
+  {
+     // Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+     // Serial.print(mfrc522.uid.uidByte[i], HEX);
+     conteudo.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+     conteudo.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  Serial.print(conteudo);
+  Serial.println();
+}
+
+
