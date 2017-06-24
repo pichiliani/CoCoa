@@ -93,10 +93,10 @@ class Th_ReadSerial(Thread):
 				for line in self.ser.readline():
 					#print("Char:" + line)
 		
-					ID = ID + line
-					if(line=="\n"):
-						print("Nova ID:" + ID[:-1])
-						self.callback(ID[:-1])
+					ID = ID + chr(line)
+					if(line==10):
+						print("Nova ID:" + ID[:-2])
+						self.callback(ID[:-2])
 						ID = ""
 		
 		# Envia o caractere pela porta serial	

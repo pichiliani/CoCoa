@@ -1,22 +1,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-
-
-// INFORMAÇÕES DA REDE
-// const char* ssid = "batcaverna";
-// const char* password = "joker2537";
-
-const char* ssid = "F_PICHILIANI";
-const char* password = "NOVAREDE";
-
-
-ESP8266WebServer server(80);
-
 // PORTAS DO LEITOR RFID
 
 //Pins para o NodeMCU (ver Arquivo DiagramaNodeMCU.docx)
@@ -40,17 +24,17 @@ const int led4 = 15;  // Porta   D8
 void AcendeLed(int l)
 {
   digitalWrite(l, 1);
-  server.send(200, "text/plain", "Acendendo led:" + String(l));
+  // server.send(200, "text/plain", "Acendendo led:" + String(l));
 }
 
 void ApagaLed(int l)
 {
   digitalWrite(l, 0);
-  server.send(200, "text/plain", "Apagando led:" + String(l));
+  // server.send(200, "text/plain", "Apagando led:" + String(l));
 }
 void PiscaLed(int l)
 {
-  server.send(200, "text/plain", "Piscando led:" + String(l));
+  // server.send(200, "text/plain", "Piscando led:" + String(l));
   
   digitalWrite(l, 0);
   delay(200);
@@ -156,29 +140,10 @@ void handleLed6Pisca() {
   }
 */
 
-void handleRoot() {
-  server.send(200, "text/plain", "hello from esp8266!");
-  }
-
-void handleNotFound(){
-  /*
-  digitalWrite(led, 1);
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET)?"GET":"POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  for (uint8_t i=0; i<server.args(); i++){
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  server.send(404, "text/plain", message);
-  digitalWrite(led, 0); */
-}
 
 void setup(void){
+  
+  
   
   // LEITOR RFID
   Serial.begin(9600);   // Inicia a serial
@@ -199,26 +164,9 @@ void setup(void){
   digitalWrite(led4, 0);
   // digitalWrite(led5, 0);
   // digitalWrite(led6, 0);
-  
-  WiFi.begin(ssid, password);
-  Serial.println("");
+ 
 
-  // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  if (MDNS.begin("esp8266")) {
-    Serial.println("MDNS responder started");
-  }
-
+/*
   server.on("/", handleRoot);
 
   // Led1
@@ -247,7 +195,7 @@ void setup(void){
   server.on("/N", handleLed5Apaga);
   server.on("/O", handleLed5Pisca);
   */
-  
+
   // Led6
   /*
   server.on("/P", handleLed6Acende);
@@ -255,23 +203,67 @@ void setup(void){
   server.on("/R", handleLed6Pisca);
   */
 
-  server.on("/inline", [](){
-    server.send(200, "text/plain", "this works as well");
-  });
-
-  server.onNotFound(handleNotFound);
-
-  server.begin();
-  Serial.println("HTTP server started");
+  Serial.println("CoCoa Arduino server started!");
 }
 
 void loop(void){
   // Cuidas das requisições WEB
-  server.handleClient();
+  // server.handleClient();
 
+  // Cuida das chamadas vindas pela porta seria
+  handleSerial();
+
+  
   // Cuida do RDID
-
   handleRFID();
+
+  delay(10);
+}
+
+void handleSerial()
+{
+  String receivedChar;
+  
+  if (Serial.available() > 0) {
+    receivedChar = Serial.readString();
+
+   // Led1
+   if (receivedChar=="A")
+      handleLed1Acende();
+   if (receivedChar=="B")
+      handleLed1Apaga();
+   if (receivedChar=="C")
+      handleLed1Pisca();
+
+   // Led2
+   if (receivedChar=="D")
+      handleLed2Acende();
+   if (receivedChar=="E")
+      handleLed2Apaga();
+   if (receivedChar=="F")
+      handleLed2Pisca();
+
+   // Led3
+   if (receivedChar=="G")
+      handleLed3Acende();
+   if (receivedChar=="H")
+      handleLed3Apaga();
+   if (receivedChar=="I")
+      handleLed3Pisca();
+
+   // Led4
+   if (receivedChar=="J")
+      handleLed4Acende();
+   if (receivedChar=="K")
+      handleLed4Apaga();
+   if (receivedChar=="L")
+      handleLed4Pisca();
+  
+   
+   // Serial.println("Recebido:" + receivedChar);
+
+    
+  }
 }
 
 void handleRFID()
@@ -285,7 +277,7 @@ void handleRFID()
   // Select one of the cards
   if ( ! mfrc522.PICC_ReadCardSerial()) 
   {
-        Serial.println("Err?");
+        // Serial.println("Err?");
         return;
   }
   //Mostra UID na serial
@@ -296,11 +288,13 @@ void handleRFID()
   {
      // Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
      // Serial.print(mfrc522.uid.uidByte[i], HEX);
-     conteudo.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+     conteudo.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? "0" : ""));
      conteudo.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
-  Serial.print(conteudo);
-  Serial.println();
+  Serial.println(conteudo);
+  // Serial.println();
+
+ 
 }
 
 
