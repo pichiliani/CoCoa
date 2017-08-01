@@ -116,7 +116,7 @@ class Th_BotTelegram(Thread):
 			self.botTelegram = bot
 			self.mensagem = msg
 			
-			print("\n Connected on /dev/ttyUSB0")
+			print("\n Sending message to telegram!")
 		
 		# Loop principal da thread	
 		def run(self):
@@ -124,11 +124,11 @@ class Th_BotTelegram(Thread):
 			
 			#Mauro
 			user_id1 = int(315613935)
-			result = self.botTelegram.send_message(user_id1, 'Colete diz: '+self.mensagem).wait()
+			result = self.botTelegram.send_message(user_id1, 'Rafael diz: '+self.mensagem).wait()
 
 			#Talita
-			#user_id2 = int(114793889)
-			#result = self.botTelegram.send_message(user_id2, 'Colete:' + #self.mensagem).wait()
+			user_id2 = int(114793889)
+			result = self.botTelegram.send_message(user_id2, 'Rafael:' + self.mensagem).wait()
 
 def CallbackLer(x):
 	print("Teste de callback")
@@ -136,12 +136,11 @@ def CallbackLer(x):
 def AcionaBotaoCallback(x,ser):
 	
 	# Piscando o LED
-	if( (x==1) or (x==2) or (x==4) or (x==4) ):
-		envia = b''
-		envia = envia + ADADOS[x-1][3] # Piscar
-		ser.write(envia)
+	envia = b''
+	envia = envia + ADADOS[x-1][3] # Piscar
 	
-	
+	ser.write(envia)
+		
 	arquivo = ADADOS[x-1][0]
 	time.sleep(0.5)
 	
@@ -150,15 +149,6 @@ def AcionaBotaoCallback(x,ser):
 	print("Botao : " + str(x) + " pressionado!");
 	p = subprocess.Popen(['aplay','-D','hw:1,0','assets/audio/' + arquivo],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 	
-		
-	# Leds da DrabonBoard
-	if(x==5):
-		th = ThLedDragon(5,12)
-		th.start()
-		
-	if(x==6):
-		th = ThLedDragon(6,69)
-		th.start()
 		
 	# Enviando a mensagem para o bot
 	thBot = Th_BotTelegram(bot, ADADOS[x-1][5])
